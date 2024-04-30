@@ -15,6 +15,7 @@
     "nuxt": "^3.10.1"
   },
   "dependencies": {
-    "@formkit/nuxt": "^1.6.2"
+    "@formkit/nuxt": "^1.6.2",
+    "compromise": "^14.13.0"
   }
 }
