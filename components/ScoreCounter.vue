@@ -1,12 +1,10 @@
-
-<template>
+<!-- <template>
     <div>
         Correct words: {{ score }}
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 
 let score = ref(0);
 
@@ -15,4 +13,6 @@ const incrementScore = () => {
 };
 
 export { score, incrementScore };
-</script>
+</script> -->
+
+<template></template>
