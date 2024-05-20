@@ -6,15 +6,15 @@
       <UButton @click="checkWord" icon="i-heroicons-book-open" target="_blank">Check word
       </UButton>
       <p v-if="checkWordCompleted && userInputWord">{{ validationMessage }}</p>
+      <Timer :seconds="numberOfSeconds" />
     </UCard>
     <!-- <ScoreCounter @increment="incrementScore" /> -->
   </UContainer>
 </template>
 
 <script setup>
-import { ref, computed, watch, defineEmits } from 'vue';
 import nlp from 'compromise';
-
+let gameState = ref('inactive');
 let userInputWord = ref('');
 let numberOfSeconds = 120;
 let wordTypes = ['verbs'];
