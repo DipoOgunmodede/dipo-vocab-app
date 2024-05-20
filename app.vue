@@ -1,4 +1,5 @@
 <template>
+  {{gameState}}
   <UContainer>
     <UCard class="mt-10">
       <h1>Enter as many {{ randomisedWordType }} as you can in {{ numberOfSeconds }} seconds</h1>
@@ -6,7 +7,7 @@
       <UButton @click="checkWord" icon="i-heroicons-book-open" target="_blank">Check word
       </UButton>
       <p v-if="checkWordCompleted && userInputWord">{{ validationMessage }}</p>
-      <Timer :seconds="numberOfSeconds" />
+      <Timer :seconds="numberOfSeconds" @gameStateChanged="updateGameState" />
     </UCard>
     <!-- <ScoreCounter @increment="incrementScore" /> -->
   </UContainer>
@@ -16,7 +17,7 @@
 import nlp from 'compromise';
 let gameState = ref('inactive');
 let userInputWord = ref('');
-let numberOfSeconds = 120;
+let numberOfSeconds = 10;
 let wordTypes = ['verbs'];
 let randomisedWordType = wordTypes[Math.floor(Math.random() * wordTypes.length)];
 let isWordValid = ref(false);
@@ -29,6 +30,10 @@ watch(userInputWord, () => {
 let validationMessage = computed(() => {
   return isWordValid.value ? 'The word is valid.' : 'The word is not valid.';
 });
+
+function updateGameState(newState) {
+  gameState.value = newState;
+}
 
 function checkWord() {
   const wordTypeFunctions = {
