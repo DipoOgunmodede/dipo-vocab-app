@@ -2,7 +2,7 @@
   {{gameState}}
   <UContainer>
     <UCard class="mt-10">
-      <h1>Enter as many {{ randomisedWordType }} as you can in {{ numberOfSeconds }} seconds</h1>
+      <h1>Enter as many {{ currentWordType }} as you can in {{ numberOfSeconds }} seconds</h1>
       <UInput v-model="userInputWord" @keyup.enter="checkWord" @keyup.space="checkWord" />
       <UButton @click="checkWord" icon="i-heroicons-book-open" target="_blank">Check word
       </UButton>
@@ -17,9 +17,9 @@
 import nlp from 'compromise';
 let gameState = ref('inactive');
 let userInputWord = ref('');
-let numberOfSeconds = 10;
-let wordTypes = ['verbs'];
-let randomisedWordType = wordTypes[Math.floor(Math.random() * wordTypes.length)];
+let numberOfSeconds = 100;
+let wordTypes = ['verbs' , 'nouns', 'adjectives', 'adverbs'];
+let currentWordType = computed(() => wordTypes[Math.floor(Math.random() * wordTypes.length)]);
 let isWordValid = ref(false);
 let checkWordCompleted = ref(false);
 
@@ -35,6 +35,7 @@ function updateGameState(newState) {
   gameState.value = newState;
 }
 
+
 function checkWord() {
   const wordTypeFunctions = {
     verbs: () => nlp(userInputWord.value).verbs(),
@@ -43,8 +44,15 @@ function checkWord() {
     adverbs: () => nlp(userInputWord.value).verbs().adverbs(),
   };
 
-  const checkFunction = wordTypeFunctions[randomisedWordType];
+  const checkFunction = wordTypeFunctions[currentWordType.value];
   isWordValid.value = checkFunction && checkFunction().length > 0;
+
+  // If the word is valid, randomize the word type for the next word
+  if (isWordValid.value) {
+    currentWordType.value = wordTypes[Math.floor(Math.random() * wordTypes.length)];
+    userInputWord.value = ''; // Clear the input field
+  }
+
   checkWordCompleted.value = true;
 }
 </script>
