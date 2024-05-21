@@ -1,9 +1,9 @@
 <template>
   {{ gameState }}
   <UContainer>
-    <UCard class="mt-10">
-      <h1>Enter as many {{ currentWordType }} as you can in {{ numberOfSeconds }} seconds</h1>
-      <UInput v-model="userInputWord" @keyup.enter="checkCurrentWord" @keyup.space="checkCurrentWord" />
+    <UCard>
+      <h1 class="text-2xl">Enter as many {{ currentWordType }} as you can in {{ numberOfSeconds }} seconds (except nothing happens when you run out of time)</h1>
+      <UInput class="my-4" v-model="userInputWord" @keyup.enter="checkCurrentWord" @keyup.space="checkCurrentWord" />
       <UButton @click="checkCurrentWord" icon="i-heroicons-book-open" target="_blank">Check word
       </UButton>
       <Timer :seconds="numberOfSeconds" @gameStateChanged="updateGameState" />
@@ -43,6 +43,8 @@ const wordTypeFunctions = {
 };
 
 function checkCurrentWord() {
+  validationMessage.value = ''; // Reset the validation message
+
   //this checks the currently input with with the corresponding method 
   const selectWordCheckFunction = wordTypeFunctions[currentWordType.value];
   if (!selectWordCheckFunction) {
