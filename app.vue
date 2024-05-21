@@ -8,7 +8,9 @@
       </UButton>
       <Timer :seconds="numberOfSeconds" @gameStateChanged="updateGameState" />
     </UCard>
-    <!-- <ScoreCounter @increment="incrementScore" /> -->
+    <!-- message if you enter a word you already tried -->
+    <p v-if="validationMessage">{{ validationMessage }}</p>
+    <p>Your current score: {{ currentScore }}</p>
   </UContainer>
 </template>
 
@@ -20,14 +22,14 @@ let numberOfSeconds = 100;
 let currentWordType = ref('');
 let currentScore = ref(0);
 let lastInputWordValid = ref(false);
+let previousWords = ref([]);
+let validationMessage = ref('');
 
 // watch(userInputWord, () => {
 //   lastInputWordValid.value = false;
 // });
 
-let validationMessage = computed(() => {
-  return lastInputWordValid.value ? 'The word is valid.' : 'The word is not valid.';
-});
+
 
 function updateGameState(newState) {
   gameState.value = newState;
@@ -43,21 +45,33 @@ const wordTypeFunctions = {
 function checkCurrentWord() {
   //this checks the currently input with with the corresponding method 
   const selectWordCheckFunction = wordTypeFunctions[currentWordType.value];
-  console.log('checking word');
-  console.log(selectWordCheckFunction())
+  if (!selectWordCheckFunction) {
+    validationMessage.value = 'Invalid word type.';
+    return;
+  }
+  const isWordDuplicated = previousWords.value.includes(userInputWord.value);
+  if (isWordDuplicated) {
+    validationMessage.value = 'You already entered this word.';
+    return;
+  }
+  // lastInputWordValid.value = selectWordCheckFunction && selectWordCheckFunction().length > 0;
+  //check last word entered isn't in previous words
   lastInputWordValid.value = selectWordCheckFunction && selectWordCheckFunction().length > 0;
+
   //if the word is valid increment score, select a new word type randomly, and set lastwordvalid to true and also checkWordCompleted to true
   console.log(lastInputWordValid.value)
   if (lastInputWordValid.value) {
     incrementScore();
     selectNewWordType();
+    //add to previous words
+    previousWords.value.push(userInputWord.value);
     lastInputWordValid.value = true;
     userInputWord.value = '';
   }
 }
 
 const selectNewWordType = () => {
-  const wordTypes = ['adjectives' ];
+  const wordTypes = ['adjectives'];
   currentWordType.value = wordTypes[Math.floor(Math.random() * wordTypes.length)];
 };
 
