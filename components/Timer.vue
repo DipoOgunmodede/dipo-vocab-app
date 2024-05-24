@@ -9,7 +9,8 @@
 import { ref, onUnmounted } from 'vue';
 
 const props = defineProps({
-  seconds: Number
+  seconds: Number,
+  triggerTimer: Boolean
 });
 
 let timeRemaining = ref(props.seconds);
@@ -44,6 +45,15 @@ const stopTimer = () => { // New function to stop the timer
     clearInterval(countdownIntervalId);
   }
 };
+
+// Watch for changes to the triggerTimer prop
+watch(() => props.triggerTimer, (newValue) => {
+  if (newValue) {
+    startTimer();
+  } else {
+    stopTimer();
+  }
+});
 
 onUnmounted(() => {
   if (countdownIntervalId) {

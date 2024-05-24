@@ -2,11 +2,12 @@
   {{ gameState }}
   <UContainer>
     <UCard>
-      <h1 class="text-2xl">Enter as many {{ currentWordType }} as you can in {{ numberOfSeconds }} seconds (except nothing happens when you run out of time)</h1>
+      <h1 class="text-2xl">Enter as many {{ currentWordType }} as you can in {{ numberOfSeconds }} seconds (except
+        nothing happens when you run out of time)</h1>
       <UInput class="my-4" v-model="userInputWord" @keyup.enter="checkCurrentWord" @keyup.space="checkCurrentWord" />
       <UButton @click="checkCurrentWord" icon="i-heroicons-book-open" target="_blank">Check word
       </UButton>
-      <Timer :seconds="numberOfSeconds" @gameStateChanged="updateGameState" />
+      <Timer :seconds="numberOfSeconds" :triggerTimer="triggerTimer" @gameStateChanged="updateGameState" />
     </UCard>
     <!-- message if you enter a word you already tried -->
     <p v-if="validationMessage">{{ validationMessage }}</p>
@@ -24,6 +25,7 @@ let currentScore = ref(0);
 let lastInputWordValid = ref(false);
 let previousWords = ref([]);
 let validationMessage = ref('');
+const triggerTimer = ref(false)
 
 // watch(userInputWord, () => {
 //   lastInputWordValid.value = false;
@@ -69,6 +71,9 @@ function checkCurrentWord() {
     previousWords.value.push(userInputWord.value);
     lastInputWordValid.value = true;
     userInputWord.value = '';
+    //pass prop to timer.vue
+    if (!previousWords.length)
+    triggerTimer.value = true;
   }
 }
 
